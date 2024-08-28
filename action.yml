@@ -1,0 +1,18 @@
+name: "Better Files Tree"
+description: "A GitHub Action that generates a file tree and updates the README."
+author: "Your Name"
+branding:
+  color: "blue"
+  icon: "tree"
+
+inputs:
+  path:
+    description: "The path to the directory to generate the tree from."
+    required: true
+    default: "."
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.path }}
