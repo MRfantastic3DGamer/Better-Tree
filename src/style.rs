@@ -12,9 +12,9 @@ pub static BASIC_STYLE: Style = Style {
     tl: "╭", tr: "╮", bl: "╰", br: "╯", is: "─", h: "─", v: "│",
 };
 
-pub static DOUBLE_LINE_STYLE: Style = Style {
-    tl: "╔", tr: "╗", bl: "╚", br: "╝", is: "═", h: "═", v: "║",
-};
+//pub static DOUBLE_LINE_STYLE: Style = Style {
+//    tl: "╔", tr: "╗", bl: "╚", br: "╝", is: "═", h: "═", v: "║",
+//};
 
 pub static HEAVY_STYLE: Style = Style {
     tl: "┏", tr: "┓", bl: "┗", br: "┛", is: "━", h: "━", v: "┃",

@@ -2,7 +2,7 @@ mod style;
 use std::cmp;
 use std::fs;
 use std::path::Path;
-use style::{BASIC_STYLE, DOUBLE_LINE_STYLE, HEAVY_STYLE};
+use style::{BASIC_STYLE, HEAVY_STYLE};
 
 fn main() {
     let path = std::env::args().nth(1).expect("Please provide a directory path.");
