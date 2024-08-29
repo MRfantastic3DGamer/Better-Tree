@@ -17,6 +17,11 @@ runs:
     - name: Check out the repository
       uses: actions/checkout@v3
 
+    - name: Clone Better Tree Generator
+      run: |
+        git clone https://github.com/MRfantastic3DGamer/Better-Tree.git
+      shell: bash
+
     - name: Install Rust
       run: |
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -24,12 +29,14 @@ runs:
       shell: bash
 
     - name: Build the project
-      run: cargo build --release
+      run: |
+        cd Better-Tree
+        cargo build --release
       shell: bash
 
     - name: Generate the tree structure
       run: |
-        target/release/better-tree ${{ inputs.path }} > output.txt
+        Better-Tree/target/release/better-tree ${{ inputs.path }} > output.txt
       shell: bash
 
     - name: Update README.md
