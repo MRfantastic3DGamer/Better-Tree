@@ -3,20 +3,61 @@ use std::cmp;
 use std::fs;
 use std::path::Path;
 use std::fs::File;
+use std::io;
+use std::env;
 use std::io::Write;
 use style::{BASIC_STYLE, HEAVY_STYLE};
 
-fn main() -> std::io::Result<()> {
-    let path = std::env::args().nth(1).expect("Please provide a directory path.");
-    let root_path = Path::new(&path);
+fn main() -> io::Result<()> {
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() < 3 {
+        eprintln!("Usage: {} <directory path> <documentation path>", args[0]);
+        std::process::exit(1);
+    }
+
+    let root_input = &args[1];
+    let doc_input = &args[2];
+    let root_path = Path::new(root_input);
+    let doc_path = Path::new(doc_input);
 
     if root_path.is_dir() {
-        let tree_string = build_view(root_path);
+        let folder_view = build_view(root_path);
         let mut file = File::create("output.txt")?;
-        file.write_all(tree_string.value.as_bytes())?;
-        println!("{}", tree_string.value);
+        file.write_all(folder_view.value.as_bytes())?;
+        if let Err(e) = update_markdown_file(doc_path, &format!("\n{}\n", folder_view.value)) {
+            eprintln!("Error updating markdown file: {}", e);
+        } else {
+            println!("File updated successfully!");
+        }
     } else {
         eprintln!("The provided path is not a directory.");
+    }
+
+    Ok(())
+}
+
+fn update_markdown_file<P: AsRef<Path>>(file_path: P, diagram: &String) -> io::Result<()> {
+    // Read the contents of the file
+    let mut content = fs::read_to_string(&file_path)?;
+
+    // Find the position of the comment
+    if let Some(comment_start) = content.find("<!---BETTER_FILES_TREE-->") {
+        // Find the start of the code block after the comment
+        if let Some(code_block_start) = content[comment_start..].find("```") {
+            let start_idx = comment_start + code_block_start + 3; // skip over ```
+            // Find the end of the code block
+            if let Some(code_block_end) = content[start_idx..].find("```") {
+                let end_idx = start_idx + code_block_end;
+
+                // Replace the content of the code block with "Hello world"
+                content.replace_range(start_idx..end_idx, diagram);
+
+                // Write the updated content back to the file
+                let mut file = fs::File::create(file_path)?;
+                file.write_all(content.as_bytes())?;
+            }
+        }
     }
 
     Ok(())
