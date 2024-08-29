@@ -2,18 +2,24 @@ mod style;
 use std::cmp;
 use std::fs;
 use std::path::Path;
+use std::fs::File;
+use std::io::Write;
 use style::{BASIC_STYLE, HEAVY_STYLE};
 
-fn main() {
+fn main() -> std::io::Result<()> {
     let path = std::env::args().nth(1).expect("Please provide a directory path.");
     let root_path = Path::new(&path);
 
     if root_path.is_dir() {
         let tree_string = build_view(root_path);
+        let mut file = File::create("output.txt")?;
+        file.write_all(tree_string.value.as_bytes())?;
         println!("{}", tree_string.value);
     } else {
         eprintln!("The provided path is not a directory.");
     }
+
+    Ok(())
 }
 
 #[derive(Debug)]
@@ -22,7 +28,7 @@ struct View {
     value: String,
 }
 
-fn put_view_in(view: &View, width: u128, fill: String, h: &str, is: &str) -> String {
+fn put_view_in(view: &View, width: u128, fill: String, h: &str, p: &str) -> String {
     view.value
         .lines()
         .enumerate()
@@ -31,7 +37,7 @@ fn put_view_in(view: &View, width: u128, fill: String, h: &str, is: &str) -> Str
             let l = line.trim();
             format!(
                 "{}{}{}{}",
-                if i == 0 { is } else { h },
+                if i == 0 { p } else { h },
                 l,
                 fill.repeat(padding_width),
                 h
