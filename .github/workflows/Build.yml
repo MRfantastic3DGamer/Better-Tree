@@ -30,7 +30,7 @@ jobs:
         run: tree
 
       - name: Copy Executable to Directory
-        run: cp ./target/release/Better-Tree ./executables/
+        run: cp ./target/release/better-tree ./executables/
 
       - name: Commit and Push Executable
         uses: ad-m/github-push-action@v0.6.0
@@ -43,5 +43,5 @@ jobs:
         run: |
           touch TestRun.md
           echo <!---BETTER_FILES_TREE-->``` ``` >> TestRun.md
-          ./executables/Better-Tree -- ./ ./TestRun.md
+          ./executables/better-tree -- ./ ./TestRun.md
           cat TestRun.md
