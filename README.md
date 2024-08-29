@@ -1,5 +1,23 @@
-## About
+# About
 This will help you better visualize the folder structure of your app
+
+## How to use
+
+1. first inside your README.md add
+```
+<!---BETTER_FILES_TREE-->
+```
+2. follow it with a code block like this
+```
+```
+3. now run these cummands
+```rust
+cargo build
+cargo run -- {{project directory path}} {{README.md path}}
+```
+
+now everything inside that code block will be replaced with the folder structure of specified directory
+
 
 ## Example of folder structure on this repo
 <!---BETTER_FILES_TREE-->
@@ -365,8 +383,7 @@ This will help you better visualize the folder structure of your app
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 ```
 
-
-<!---TEST_CASE-->
-```
-this should not get updated
-```
+what are you trying to find scrolling this far down.
+while you are here, let me explain why I built this.
+This was created as the folder structure created by lenux command tree looks too generic without any options for customizability
+# Hope it helps . Bye
