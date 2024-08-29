@@ -26,8 +26,11 @@ jobs:
       - name: Create Executables Directory
         run: mkdir -p ./executables
 
+      - name: debug
+        run: tree
+
       - name: Copy Executable to Directory
-        run: cp ./target/release/your_executable_name ./executables/
+        run: cp ./target/release/Better-Tree ./executables/
 
       - name: Commit and Push Executable
         uses: ad-m/github-push-action@v0.6.0
@@ -36,3 +39,9 @@ jobs:
           branch: main
           force: true
           directory: ./executables/
+      - name: Test Run
+        run: |
+          touch TestRun.md
+          echo <!---BETTER_FILES_TREE-->``` ``` >> TestRun.md
+          ./executables/Better-Tree -- ./ ./TestRun.md
+          cat TestRun.md
