@@ -1,18 +1,40 @@
-name: "Better Files Tree"
-description: "A GitHub Action that generates a file tree and updates the README."
-author: "Your Name"
+
+name: 'Generate Pattern'
+description: 'A GitHub Action that generates a directory structure pattern and updates the README.md'
+author: 'Your Name'
 branding:
-  color: "blue"
-  icon: "tree"
+  icon: 'terminal'
+  color: 'purple'
 
 inputs:
   path:
-    description: "The path to the directory to generate the tree from."
+    description: 'The path to the project directory'
     required: true
-    default: "."
+    default: './'
+
+outputs:
+  pattern:
+    description: 'Generated directory pattern'
 
 runs:
-  using: "docker"
-  image: "Dockerfile"
-  args:
-    - ${{ inputs.path }}
+  using: 'composite'
+  steps:
+    - name: Run Generate Pattern
+      run: |
+        cargo run --release -- ${{ inputs.path }}
+        echo "::set-output name=pattern::$(cat output.txt)"
+
+    - name: Update README.md
+      run: |
+        PATTERN=$(cat output.txt)
+        sed -i '/<!---BETTER_FILES_TREE-->/,/<\/pre>/c\<!---BETTER_FILES_TREE-->\n<pre><code>\n$PATTERN\n</code></pre>' README.md
+      shell: bash
+
+  - name: Commit and push changes
+    run: |
+      git config --local user.email "github-actions[bot]@users.noreply.github.com"
+      git config --local user.name "github-actions[bot]"
+      git add README.md
+      git commit -m "Update README with generated pattern"
+      git push
+      shell: bash
