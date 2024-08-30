@@ -1,7 +1,7 @@
 mod style;
 use std::cmp;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::io;
 use std::process::exit;
 use std::io::Write;
@@ -47,18 +47,30 @@ fn main() -> io::Result<()> {
                 .long("show-hidden")
                 .action(clap::ArgAction::SetTrue),
         )
+        .arg(
+            Arg::new("ignored-locations")
+                .help("List of locations to ignore")
+                .short('i')
+                .long("ignore")
+                .num_args(0..),
+            )
         .get_matches();
 
     // Get the required arguments
     let root_input = matches.get_one::<String>("root").expect("Required argument");
+    let root_path = Path::new(root_input);
     let doc_input = matches.get_one::<String>("doc");
+    let ignored_locations: Vec<PathBuf> = matches
+        .get_many::<String>("ignored-locations")
+        .unwrap_or_default()
+        .map(|location| root_path.join(location))
+        .collect();
 
     println!("Root input: {}", root_input);
     if let Some(doc_input) = doc_input {
         println!("Doc input: {}", doc_input);
     }
 
-    let root_path = Path::new(root_input);
 
     println!("Resolved root path: {}", root_path.display());
 
@@ -75,7 +87,7 @@ fn main() -> io::Result<()> {
         println!("Root path is a directory");
 
         // Modify the build_view function to use the flags as needed
-        let folder_view = build_view(root_path, &no_files, &stack_folders, &show_hidden);
+        let folder_view = build_view(root_path, &no_files, &stack_folders, &show_hidden, &ignored_locations);
         if let Some(doc_input) = doc_input {
             let doc_path = Path::new(doc_input);
             
@@ -149,13 +161,22 @@ fn put_view_in(view: &View, width: u128, fill: String, h: &str, p: &str) -> Stri
         .join("\n")
 }
 
-fn build_view(path: &Path, no_files: &bool, stack_folders: &bool, show_hidden: &bool) -> View {
+fn is_ignored(path: &Path, ignored_locations: &Vec<PathBuf>) -> bool {
+    for ignored_path in ignored_locations {
+        if path == ignored_path {
+            return true;
+        }
+    }
+    false
+}
+
+fn build_view(path: &Path, no_files: &bool, stack_folders: &bool, show_hidden: &bool, ignored_locations: &Vec<PathBuf> ) -> View {
     
     let name = path.file_name().unwrap().to_string_lossy().to_string().trim().to_string();
     let name_width = name.len() as u128;
     let is_hidden = name.starts_with('.');
 
-    if is_hidden && !*show_hidden {
+    if is_ignored(path, ignored_locations) || (is_hidden && !*show_hidden) {
         return View {
             width: 0,
             value: String::new(),
@@ -181,7 +202,7 @@ fn build_view(path: &Path, no_files: &bool, stack_folders: &bool, show_hidden: &
                 for entry in entries {
                     match entry {
                         Ok(entry) => {
-                            let child_view = build_view(&entry.path(), no_files, stack_folders, show_hidden);
+                            let child_view = build_view(&entry.path(), no_files, stack_folders, show_hidden, ignored_locations);
                             if !child_view.add { continue; }
                             if child_view.hidden {
                                 if*(show_hidden){
