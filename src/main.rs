@@ -6,18 +6,53 @@ use std::io;
 use std::env;
 use std::process::exit;
 use std::io::Write;
+use clap::{Arg, Command};
 use style::{BASIC_STYLE, HEAVY_STYLE};
 
 fn main() -> io::Result<()> {
-    let args: Vec<String> = env::args().collect();
+    // Define the command-line interface
+    let matches = Command::new("myapp")
+        .version("1.0")
+        .author("Your Name <your.email@example.com>")
+        .about("Generates a directory structure view and updates a markdown file.")
+        .arg(
+            Arg::new("root")
+                .help("Sets the root directory path")
+                .required(true)
+                .index(1),
+        )
+        .arg(
+            Arg::new("doc")
+                .help("Sets the documentation file path")
+                .required(true)
+                .index(2),
+        )
+        .arg(
+            Arg::new("no-files")
+                .help("Exclude files from the output")
+                .short('n')
+                .long("no-files")
+                .takes_value(false),
+        )
+        .arg(
+            Arg::new("stack-folders")
+                .help("Display folders in a stacked manner")
+                .short('s')
+                .long("stack-folders")
+                .takes_value(false),
+        )
+        .arg(
+            Arg::new("show-hidden")
+                .help("Include hidden files and folders")
+                .short('h')
+                .long("show-hidden")
+                .takes_value(false),
+        )
+        .get_matches();
 
-    if args.len() < 3 {
-        eprintln!("Usage: {} <directory path> <documentation path>", args[0]);
-        exit(1);
-    }
-
-    let root_input = &args[1];
-    let doc_input = &args[2];
+    // Get the required arguments
+    let root_input = matches.value_of("root").unwrap();
+    let doc_input = matches.value_of("doc").unwrap();
 
     println!("Root input: {}", root_input);
     println!("Doc input: {}", doc_input);
@@ -28,9 +63,21 @@ fn main() -> io::Result<()> {
     println!("Resolved root path: {}", root_path.display());
     println!("Resolved doc path: {}", doc_path.display());
 
+    // Get the optional flags
+    let no_files = matches.is_present("no-files");
+    let stack_folders = matches.is_present("stack-folders");
+    let show_hidden = matches.is_present("show-hidden");
+
+    println!("No files flag: {}", no_files);
+    println!("Stack folders flag: {}", stack_folders);
+    println!("Show hidden flag: {}", show_hidden);
+
     if root_path.is_dir() {
         println!("Root path is a directory");
-        let folder_view = build_view(root_path);
+
+        // Modify the build_view function to use the flags as needed
+        let folder_view = build_view(root_path, no_files, stack_folders, show_hidden);
+        
         if let Err(e) = update_markdown_file(doc_path, &format!("\n{}\n", folder_view.value)) {
             eprintln!("Error updating markdown file: {}", e);
             exit(1);
@@ -41,6 +88,7 @@ fn main() -> io::Result<()> {
         eprintln!("The provided path -{}- is not a directory.", root_path.display());
         exit(1);
     }
+
     Ok(())
 }
 
