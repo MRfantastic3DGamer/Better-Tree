@@ -30,7 +30,7 @@ fn main() -> io::Result<()> {
             println!("File updated successfully!");
         }
     } else {
-        eprintln!("The provided path -{}- is not a directory.", root_path);
+        eprintln!("The provided path -{}- is not a directory.", root_path.display());
         exit(1);
     }
 
