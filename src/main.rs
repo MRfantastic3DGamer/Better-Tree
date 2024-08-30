@@ -2,9 +2,9 @@ mod style;
 use std::cmp;
 use std::fs;
 use std::path::Path;
-use std::fs::File;
 use std::io;
 use std::env;
+use std::process::exit;
 use std::io::Write;
 use style::{BASIC_STYLE, HEAVY_STYLE};
 
@@ -13,7 +13,7 @@ fn main() -> io::Result<()> {
 
     if args.len() < 3 {
         eprintln!("Usage: {} <directory path> <documentation path>", args[0]);
-        std::process::exit(1);
+        exit(1);
     }
 
     let root_input = &args[1];
@@ -23,15 +23,15 @@ fn main() -> io::Result<()> {
 
     if root_path.is_dir() {
         let folder_view = build_view(root_path);
-        let mut file = File::create("output.txt")?;
-        file.write_all(folder_view.value.as_bytes())?;
         if let Err(e) = update_markdown_file(doc_path, &format!("\n{}\n", folder_view.value)) {
             eprintln!("Error updating markdown file: {}", e);
+            exit(1);
         } else {
             println!("File updated successfully!");
         }
     } else {
         eprintln!("The provided path is not a directory.");
+        exit(1);
     }
 
     Ok(())

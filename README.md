@@ -6,11 +6,6 @@ This will help you better visualize the folder structure of your app
 ```
 ┏ better-tree━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┣output.txt                                                     ┃
-┣╭ .github────────────────╮                                     ┃
-┃├┏ workflows━━━━━━━━━━━┓ │                                     ┃
-┃│┣generate-pattern.yml ┃ │                                     ┃
-┃│┗━━━━━━━━━━━━━━━━━━━━━┛ │                                     ┃
-┃╰────────────────────────╯                                     ┃
 ┣Cargo.toml                                                     ┃
 ┣Cargo.lock                                                     ┃
 ┣┏ target━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃
@@ -34,8 +29,7 @@ This will help you better visualize the folder structure of your app
 ┃┃┃╰─────────────────────────────────╯                      ┃ ┃ ┃
 ┃┃┣┏ incremental━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ ┃ ┃
 ┃┃┃┣┏ better_tree-27t5z6hufnro2━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ ┃ ┃ ┃
-┃┃┃┃┣┏ s-gzg1nme9s4-0dwssti-7uxkawuusd62n50nznfj0i39o━┓ ┃ ┃ ┃ ┃ ┃
-┃┃┃┃┃┣b3p6q9nxwkv66qvn2twf6grh6.o                     ┃ ┃ ┃ ┃ ┃ ┃
+┃┃┃┃┣┏ s-gzgiats5ws-1nw374s-0j219fv47orycblk5dqg4qd49━┓ ┃ ┃ ┃ ┃ ┃
 ┃┃┃┃┃┣3tmb2m7hu4ya3qdbicub8676e.o                     ┃ ┃ ┃ ┃ ┃ ┃
 ┃┃┃┃┃┣cxresccyi58927mkepdoyufic.o                     ┃ ┃ ┃ ┃ ┃ ┃
 ┃┃┃┃┃┣dtyx7mpwl558mtrj42diw9hel.o                     ┃ ┃ ┃ ┃ ┃ ┃
@@ -124,7 +118,7 @@ This will help you better visualize the folder structure of your app
 ┃┃┃┃┃┣a3tmqdx3es53chf80lfwxdoba.o                     ┃ ┃ ┃ ┃ ┃ ┃
 ┃┃┃┃┃┣4xbqity7uyv4hkwcs3yomtard.o                     ┃ ┃ ┃ ┃ ┃ ┃
 ┃┃┃┃┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ ┃ ┃ ┃ ┃
-┃┃┃┃┣s-gzg1nme9s4-0dwssti.lock                          ┃ ┃ ┃ ┃ ┃
+┃┃┃┃┣s-gzgiats5ws-1nw374s.lock                          ┃ ┃ ┃ ┃ ┃
 ┃┃┃┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ ┃ ┃ ┃
 ┃┃┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ ┃ ┃
 ┃┃┣┏ examples━┓                                             ┃ ┃ ┃
@@ -157,7 +151,6 @@ This will help you better visualize the folder structure of your app
 ┃┣.rustc_info.json                                            ┃ ┃
 ┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃
 ┣README.md                                                      ┃
-┣action.yml                                                     ┃
 ┣┏ src━━━━━┓                                                    ┃
 ┃┣main.rs  ┃                                                    ┃
 ┃┣style.rs ┃                                                    ┃
@@ -253,6 +246,12 @@ This will help you better visualize the folder structure of your app
 ┃│┣┏ 6b━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
 ┃│┃┣2845a91bb69cb7fb77953084cd637c4b4580bd ┃ ┃ │                ┃
 ┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
+┃│┣┏ a3━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
+┃│┃┣89ada1bc4e2c0259ec38190917b4b45c3270a5 ┃ ┃ │                ┃
+┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
+┃│┣┏ e7━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
+┃│┃┣461e87f0122d614b4d2c53b7a82180d1bd100c ┃ ┃ │                ┃
+┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
 ┃│┣┏ 25━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
 ┃│┃┣5d4da38a94d691a062611169580822c896f089 ┃ ┃ │                ┃
 ┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
@@ -260,6 +259,10 @@ This will help you better visualize the folder structure of your app
 ┃│┃┗━━━━━━┛                                  ┃ │                ┃
 ┃│┣┏ 42━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
 ┃│┃┣c4afff9fcc85751a853e73582aba443b2adbb9 ┃ ┃ │                ┃
+┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
+┃│┣┏ f7━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
+┃│┃┣51eead65ecc8a98dc6e010146f6f024263b096 ┃ ┃ │                ┃
+┃│┃┣180e97fd43344c50b7ba603c06a1296b63f7d4 ┃ ┃ │                ┃
 ┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
 ┃│┣┏ 0d━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
 ┃│┃┣9f5c32bc973f93a39606721294ee3a921149a7 ┃ ┃ │                ┃
@@ -273,13 +276,20 @@ This will help you better visualize the folder structure of your app
 ┃│┃┣5c4c3f945541dcd02a0ca7892b691015cbd593 ┃ ┃ │                ┃
 ┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
 ┃│┣┏ 22━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
+┃│┃┣90bc329a069fb1aa005dfd34c729124dc56136 ┃ ┃ │                ┃
 ┃│┃┣3651dfe6e0f68921b01ccb88379f50db33e244 ┃ ┃ │                ┃
+┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
+┃│┣┏ d4━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
+┃│┃┣7d5fa75bd41ce2665f0d4d2c81afca145b617c ┃ ┃ │                ┃
 ┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
 ┃│┣┏ 66━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
 ┃│┃┣12012c8cd93019aa0f119209604d34890178c7 ┃ ┃ │                ┃
 ┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
 ┃│┣┏ 84━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
 ┃│┃┣8bb8c7600b47629131aaf936bfb818cddc0253 ┃ ┃ │                ┃
+┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
+┃│┣┏ ee━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
+┃│┃┣b281ccea9a02c32363c749c154596b81286f2c ┃ ┃ │                ┃
 ┃│┃┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ┃ │                ┃
 ┃│┣┏ a7━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ ┃ │                ┃
 ┃│┃┣f4d07225fb3b28311a49288cb421a4bb24689a ┃ ┃ │                ┃
@@ -361,12 +371,17 @@ This will help you better visualize the folder structure of your app
 ┃├HEAD                                         │                ┃
 ┃╰─────────────────────────────────────────────╯                ┃
 ┣.gitignore                                                     ┃
-┣Dockerfile                                                     ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 ```
 
 
-<!---TEST_CASE-->
-```
-this should not get updated
-```
+what are you trying to find scrolling this far down.
+
+
+while you are here, let me explain why I built this.
+
+
+This was created as the folder structure created by lenux command tree looks too generic without any options for customizability
+
+
+# Hope it helps . Bye
