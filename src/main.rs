@@ -1,4 +1,5 @@
 mod style;
+use std::env;
 use std::cmp;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -9,7 +10,7 @@ use style::{BASIC_STYLE, HEAVY_STYLE};
 use clap::{Arg, Command};
 
 fn main() -> io::Result<()> {
-    // Define the command-line interface
+    let current_dir = env::current_dir()?;
     let matches = Command::new("myapp")
         .version("1.0")
         .author("Your Name <your.email@example.com>")
@@ -58,7 +59,7 @@ fn main() -> io::Result<()> {
 
     // Get the required arguments
     let root_input = matches.get_one::<String>("root").expect("Required argument");
-    let root_path = Path::new(root_input);
+    let root_path = current_dir.join(root_input);
     let doc_input = matches.get_one::<String>("doc");
     let ignored_locations: Vec<PathBuf> = matches
         .get_many::<String>("ignored-locations")
@@ -87,7 +88,7 @@ fn main() -> io::Result<()> {
         println!("Root path is a directory");
 
         // Modify the build_view function to use the flags as needed
-        let folder_view = build_view(root_path, &no_files, &stack_folders, &show_hidden, &ignored_locations);
+        let folder_view = build_view(root_path.as_path(), &no_files, &stack_folders, &show_hidden, &ignored_locations);
         if let Some(doc_input) = doc_input {
             let doc_path = Path::new(doc_input);
             
