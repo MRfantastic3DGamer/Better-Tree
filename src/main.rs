@@ -3,11 +3,10 @@ use std::cmp;
 use std::fs;
 use std::path::Path;
 use std::io;
-use std::env;
 use std::process::exit;
 use std::io::Write;
-use clap::{Arg, Command};
 use style::{BASIC_STYLE, HEAVY_STYLE};
+use clap::{Arg, Command};
 
 fn main() -> io::Result<()> {
     // Define the command-line interface
@@ -23,8 +22,8 @@ fn main() -> io::Result<()> {
         )
         .arg(
             Arg::new("doc")
-                .help("Sets the documentation file path")
-                .required(true)
+                .help("Sets the documentation file path\nit should contain \n <!---BETTER_FILES_TREE-->\n```\n```")
+                .required(false)                
                 .index(2),
         )
         .arg(
@@ -32,41 +31,41 @@ fn main() -> io::Result<()> {
                 .help("Exclude files from the output")
                 .short('n')
                 .long("no-files")
-                .takes_value(false),
+                .action(clap::ArgAction::SetTrue),
         )
         .arg(
             Arg::new("stack-folders")
                 .help("Display folders in a stacked manner")
                 .short('s')
                 .long("stack-folders")
-                .takes_value(false),
+                .action(clap::ArgAction::SetTrue),
         )
         .arg(
             Arg::new("show-hidden")
                 .help("Include hidden files and folders")
-                .short('h')
+                .short('H')
                 .long("show-hidden")
-                .takes_value(false),
+                .action(clap::ArgAction::SetTrue),
         )
         .get_matches();
 
     // Get the required arguments
-    let root_input = matches.value_of("root").unwrap();
-    let doc_input = matches.value_of("doc").unwrap();
+    let root_input = matches.get_one::<String>("root").expect("Required argument");
+    let doc_input = matches.get_one::<String>("doc");
 
     println!("Root input: {}", root_input);
-    println!("Doc input: {}", doc_input);
+    if let Some(doc_input) = doc_input {
+        println!("Doc input: {}", doc_input);
+    }
 
     let root_path = Path::new(root_input);
-    let doc_path = Path::new(doc_input);
 
     println!("Resolved root path: {}", root_path.display());
-    println!("Resolved doc path: {}", doc_path.display());
 
     // Get the optional flags
-    let no_files = matches.is_present("no-files");
-    let stack_folders = matches.is_present("stack-folders");
-    let show_hidden = matches.is_present("show-hidden");
+    let no_files = matches.get_flag("no-files");
+    let stack_folders = matches.get_flag("stack-folders");
+    let show_hidden = matches.get_flag("show-hidden");
 
     println!("No files flag: {}", no_files);
     println!("Stack folders flag: {}", stack_folders);
@@ -76,13 +75,18 @@ fn main() -> io::Result<()> {
         println!("Root path is a directory");
 
         // Modify the build_view function to use the flags as needed
-        let folder_view = build_view(root_path, no_files, stack_folders, show_hidden);
-        
-        if let Err(e) = update_markdown_file(doc_path, &format!("\n{}\n", folder_view.value)) {
-            eprintln!("Error updating markdown file: {}", e);
-            exit(1);
+        let folder_view = build_view(root_path, &no_files, &stack_folders, &show_hidden);
+        if let Some(doc_input) = doc_input {
+            let doc_path = Path::new(doc_input);
+            
+            if let Err(e) = update_markdown_file(doc_path, &format!("\n{}\n", folder_view.value)) {
+                eprintln!("Error updating markdown file: {}", e);
+                exit(1);
+            } else {
+                println!("File updated successfully!");
+            }
         } else {
-            println!("File updated successfully!");
+            eprintln!("{}", folder_view.value);
         }
     } else {
         eprintln!("The provided path -{}- is not a directory.", root_path.display());
@@ -122,6 +126,8 @@ fn update_markdown_file<P: AsRef<Path>>(file_path: P, diagram: &String) -> io::R
 struct View {
     width: u128,
     value: String,
+    hidden: bool,
+    add: bool,
 }
 
 fn put_view_in(view: &View, width: u128, fill: String, h: &str, p: &str) -> String {
@@ -143,14 +149,27 @@ fn put_view_in(view: &View, width: u128, fill: String, h: &str, p: &str) -> Stri
         .join("\n")
 }
 
-fn build_view(path: &Path) -> View {
-    if path.is_file() {
-        // Get the file name and calculate its length
-        let file_name = path.file_name().unwrap().to_string_lossy().to_string().trim().to_string();
-        let width = file_name.len() as u128;
+fn build_view(path: &Path, no_files: &bool, stack_folders: &bool, show_hidden: &bool) -> View {
+    
+    let name = path.file_name().unwrap().to_string_lossy().to_string().trim().to_string();
+    let name_width = name.len() as u128;
+    let is_hidden = name.starts_with('.');
+
+    if is_hidden && !*show_hidden {
         return View {
-            width,
-            value: file_name,
+            width: 0,
+            value: String::new(),
+            hidden: is_hidden,
+            add: false,
+        };
+    }
+
+    if path.is_file() {
+        return View {
+            width: name_width,
+            value: name,
+            hidden: is_hidden,
+            add: !no_files,
         };
     } else if path.is_dir() {
         // Directory case
@@ -162,7 +181,15 @@ fn build_view(path: &Path) -> View {
                 for entry in entries {
                     match entry {
                         Ok(entry) => {
-                            let child_view = build_view(&entry.path());
+                            let child_view = build_view(&entry.path(), no_files, stack_folders, show_hidden);
+                            if !child_view.add { continue; }
+                            if child_view.hidden {
+                                if*(show_hidden){
+                                    max_width = cmp::max(max_width, child_view.width);
+                                    children_views.push(child_view);
+                                }
+                                continue;
+                            }
                             max_width = cmp::max(max_width, child_view.width);
                             children_views.push(child_view);
                         }
@@ -173,11 +200,8 @@ fn build_view(path: &Path) -> View {
             Err(e) => eprintln!("Error reading directory: {}", e),
         }
 
-        let dir_name = path.file_name().unwrap().to_string_lossy().to_string();
-        // Adjust max_width calculation to avoid overflow
-        let dir_name_len = dir_name.len() as u128;
-        max_width = cmp::max(max_width, dir_name_len + 1);
-        let style = if dir_name.starts_with('.') {&BASIC_STYLE} else {&HEAVY_STYLE};
+        max_width = cmp::max(max_width, name_width + 1);
+        let style = if name.starts_with('.') {&BASIC_STYLE} else {&HEAVY_STYLE};
 
         let children_view_value = children_views
             .iter()
@@ -194,8 +218,8 @@ fn build_view(path: &Path) -> View {
         let val = format!(
             "{} {}{}{}{}\n{}{}{}", 
             style.tl,
-            dir_name,
-            style.h.to_string().repeat((max_width - dir_name_len) as usize),
+            name,
+            style.h.to_string().repeat((max_width - name_width) as usize),
             style.tr,
             if children_views.len()>0 {"\n".to_string() + &children_view_value} else {"".to_string()},
             style.bl,
@@ -206,6 +230,8 @@ fn build_view(path: &Path) -> View {
         return View {
             width: max_width + 3,
             value: val,
+            hidden: is_hidden,
+            add: true,
         };
     }
 
@@ -213,5 +239,7 @@ fn build_view(path: &Path) -> View {
     View {
         width: 0,
         value: String::new(),
+        hidden: true,
+        add: true,
     }
 }
