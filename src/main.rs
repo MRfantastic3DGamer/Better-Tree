@@ -224,6 +224,16 @@ fn build_view(path: &Path, no_files: &bool, stack_folders: &bool, show_hidden: &
         max_width = cmp::max(max_width, name_width + 1);
         let style = if name.starts_with('.') {&BASIC_STYLE} else {&HEAVY_STYLE};
 
+        if children_views.len() == 1 && *stack_folders {
+            let stacked_name = format!("{}/{}",name, children_views[0].value);
+            return View{
+                width: stacked_name.len() as u128,
+                value: stacked_name,
+                hidden: is_hidden,
+                add: true,
+            };
+        }
+
         let children_view_value = children_views
             .iter()
             .map(|child_view| put_view_in(
