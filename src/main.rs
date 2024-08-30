@@ -18,10 +18,18 @@ fn main() -> io::Result<()> {
 
     let root_input = &args[1];
     let doc_input = &args[2];
+
+    println!("Root input: {}", root_input);
+    println!("Doc input: {}", doc_input);
+
     let root_path = Path::new(root_input);
     let doc_path = Path::new(doc_input);
 
+    println!("Resolved root path: {}", root_path.display());
+    println!("Resolved doc path: {}", doc_path.display());
+
     if root_path.is_dir() {
+        println!("Root path is a directory");
         let folder_view = build_view(root_path);
         if let Err(e) = update_markdown_file(doc_path, &format!("\n{}\n", folder_view.value)) {
             eprintln!("Error updating markdown file: {}", e);
@@ -33,7 +41,6 @@ fn main() -> io::Result<()> {
         eprintln!("The provided path -{}- is not a directory.", root_path.display());
         exit(1);
     }
-
     Ok(())
 }
 
