@@ -59,7 +59,7 @@ fn main() -> io::Result<()> {
 
     // Get the required arguments
     let root_input = matches.get_one::<String>("root").expect("Required argument");
-    let root_path = if root_input == "./" { current_dir } else { current_dir.join(root_input) };
+    let root_path = if root_input == "./" { current_dir.clone() } else { current_dir.join(root_input) };
     let doc_input = matches.get_one::<String>("doc");
     let ignored_locations: Vec<PathBuf> = matches
         .get_many::<String>("ignored-locations")
@@ -69,7 +69,7 @@ fn main() -> io::Result<()> {
 
     println!("Root input: {}", root_input);
     if let Some(doc_input) = doc_input {
-        println!("Doc input: {}", doc_input);
+        println!("Doc input: {}", current_dir.join(doc_input).display());
     }
 
 
@@ -90,7 +90,8 @@ fn main() -> io::Result<()> {
         // Modify the build_view function to use the flags as needed
         let folder_view = build_view(root_path.as_path(), &no_files, &stack_folders, &show_hidden, &ignored_locations);
         if let Some(doc_input) = doc_input {
-            let doc_path = Path::new(doc_input);
+            let doc_full_path = current_dir.join(doc_input);
+            let doc_path = doc_full_path.as_path();
             
             if let Err(e) = update_markdown_file(doc_path, &format!("\n{}\n", folder_view.value)) {
                 eprintln!("Error updating markdown file: {}", e);
