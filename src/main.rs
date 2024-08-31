@@ -59,7 +59,7 @@ fn main() -> io::Result<()> {
 
     // Get the required arguments
     let root_input = matches.get_one::<String>("root").expect("Required argument");
-    let root_path = current_dir.join(root_input);
+    let root_path = if root_input == "./" { current_dir } else { current_dir.join(root_input) };
     let doc_input = matches.get_one::<String>("doc");
     let ignored_locations: Vec<PathBuf> = matches
         .get_many::<String>("ignored-locations")
