@@ -28,6 +28,13 @@ fn main() -> io::Result<()> {
                 .index(2),
         )
         .arg(
+            Arg::new("auto-doc")
+                .help("automatically find the README.md")
+                .short('a')
+                .long("auto-doc")
+                .action(clap::ArgAction::SetTrue),
+        )
+        .arg(
             Arg::new("no-files")
                 .help("Exclude files from the output")
                 .short('n')
@@ -67,31 +74,55 @@ fn main() -> io::Result<()> {
         .map(|location| root_path.join(location))
         .collect();
 
-    println!("Root input: {}", root_input);
-    if let Some(doc_input) = doc_input {
-        println!("Doc input: {}", current_dir.join(doc_input).display());
-    }
 
 
-    println!("Resolved root path: {}", root_path.display());
 
     // Get the optional flags
+    let auto_doc = matches.get_flag("auto-doc");
     let no_files = matches.get_flag("no-files");
     let stack_folders = matches.get_flag("stack-folders");
     let show_hidden = matches.get_flag("show-hidden");
 
+    let mut doc_path = Path::new("./README.md");
+    let mut readme_path_buf: Option<PathBuf> = None;
+
+    println!("Root input: {}", root_input);
+    if auto_doc {
+        let path = root_path.clone();
+        
+        for entry in std::fs::read_dir(path).unwrap() {
+            let entry = entry.unwrap();
+            if entry.file_name() == "README.md" {
+                readme_path_buf = Some(entry.path()); // Store PathBuf in Option
+                doc_path = readme_path_buf.as_ref().unwrap(); // Borrow Path from PathBuf
+                break;
+            }
+        }   
+    }
+    else if let Some(doc_input) = doc_input {
+        println!("Doc input: {}", current_dir.join(doc_input).display());
+    }
     println!("No files flag: {}", no_files);
     println!("Stack folders flag: {}", stack_folders);
     println!("Show hidden flag: {}", show_hidden);
+    println!("Resolved root path: {}", root_path.display());
 
     if root_path.is_dir() {
         println!("Root path is a directory");
 
         // Modify the build_view function to use the flags as needed
         let folder_view = build_view(root_path.as_path(), &no_files, &stack_folders, &show_hidden, &ignored_locations);
-        if let Some(doc_input) = doc_input {
+        
+        if auto_doc && doc_path.is_file() {
+            if let Err(e) = update_markdown_file(doc_path, &format!("\n{}\n", folder_view.value)) {
+                eprintln!("Error updating markdown file: {}", e);
+                exit(1);
+            } else {
+                println!("File updated successfully!");
+            }
+        } else if let Some(doc_input) = doc_input {
             let doc_full_path = current_dir.join(doc_input);
-            let doc_path = doc_full_path.as_path();
+            doc_path = doc_full_path.as_path();
             
             if let Err(e) = update_markdown_file(doc_path, &format!("\n{}\n", folder_view.value)) {
                 eprintln!("Error updating markdown file: {}", e);

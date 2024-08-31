@@ -39,6 +39,9 @@ it was bilt with this cummand
 target/debug/better-tree ./ -i ./target/debug
 ```
 ```
+target/debug/better-tree ./ -i ./target/debug
+```
+```
 ┏ better-tree━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┣output.txt                              ┃
 ┣Cargo.toml                              ┃
